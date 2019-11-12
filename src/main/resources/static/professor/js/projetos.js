@@ -42,7 +42,7 @@ if(session_login == null){
                 <td>${ project.titulo }</td>
                 <td>${ project['descricao-breve'] }</td>
                 <td>Nome da Empresa</td>
-                <td id="td-key">${project['key-projeto-aluno'] == null ? "Aguardando gerar chave" : project['key-projeto-aluno']}<td>
+                <td id="td-key">${project['key-projeto-aluno'] != null ? project['key-projeto-aluno'] : '<input type="text" class="form-control" id="keyAlId" name="key_al" placeholder="Inserir Chave">'}<td>
                 <td id="td-alkey-${project_id}"></td>
                 <td id="td-alunos-${project_id}"></td>
             </tr>
@@ -56,14 +56,41 @@ if(session_login == null){
           </button>
           </li>`);
 
-          let $generateKey = $(generateKey);
-          $generateKey.click(function(e){
-            e.preventDefault();
-            _generateKeyRandon(project);
-          });
+          let removeKey = $.parseHTML(`<button type="button" class="btn btn-danger">
+              Remover Chave
+          </button>
+          </li>`);
 
-          $('#td-alkey-'+project_id).append(generateKey);
-          /* </ >Gerando Chave de Acesso do Aluno td-alkey </ >*/
+          if(project['key-projeto-aluno'] == null){
+            let $generateKey = $(generateKey);
+            $generateKey.click(function(e){
+              e.preventDefault();
+              var myKey = $("#keyAlId").val();
+            
+              if (confirm('Deseja realmente alterar o chave dos alunos ?')) {
+                $.post("/atribuirChave", JSON.stringify({'_id':project._id, 'key-projeto-aluno': myKey}), "json");
+                location.reload();
+              }
+            });
+  
+            $('#td-alkey-'+project_id).append(generateKey);
+            /* </ >Gerando Chave de Acesso do Aluno td-alkey </ >*/
+          }
+          else{
+            let $removeKey = $(removeKey);
+            $removeKey.click(function(e){
+              e.preventDefault();
+              var myKey = null;
+              if (confirm('Deseja realmente alterar o chave dos alunos ?')) {
+                $.post("/atribuirChave", JSON.stringify({'_id':project._id, 'key-projeto-aluno': myKey}), "json");
+                location.reload();
+              }
+            });
+  
+            $('#td-alkey-'+project_id).append(removeKey);
+           
+          }
+         
 
           /*Gerenciar alunos presentes td-alunos*/
           let AlPresentes = $.parseHTML(`
@@ -138,23 +165,7 @@ function userData(user){
 
 }
 
-function _generateKeyRandon(project){
-    const randomKey = len =>{
-      let key = ''
-      do{
-        key += Math.random().toString(36).substr(2)
-      }while(key.length < len)
-        key = key.substr(0,len)
-        return key
-    }
-    let myKey = randomKey(16)
-    if (confirm('Deseja realmente alterar o chave dos alunos ?')) {
-      $.post("/atribuirChave", JSON.stringify({'_id':project._id, 'key-projeto-aluno': myKey}), "json");
-      location.reload();
-    }
 
-    
-}
 
 
 function _AlunosPresentes(project){
