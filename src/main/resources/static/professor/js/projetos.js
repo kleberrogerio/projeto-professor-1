@@ -127,8 +127,7 @@ function userData(user){
               window.location.href = 'index.html';
           }
       });
-
-
+      
       /* Alterar Senha */
       let updateSenha = $.parseHTML(`
       <li><i class="fa fa-sign-out" aria-hidden="true"></i>
@@ -170,24 +169,39 @@ function userData(user){
 
 function _AlunosPresentes(project){
 
-  let form_alunos =  `
+  let form_alunos =  $.parseHTML(`
     <div class="modal fade" id="modal-alunos-presentes" tabindex="-1" role="dialog" aria-labelledby="modal-alunos-presentes" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Alteração de Senha</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Alunos do Projeto</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
-      
+        <div class="modal-body" >
+          <div id="alunos" class="container"><br>
+          <table class="table">
+              <thead class="thead-dark">
+                  <tr>
+                      <td scope="col">Email</td>
+                      <td></td>
+                  </tr>
+              </thead>
+              <tbody id="tabela-alunos" td_body_aluno>
+
+              </tbody>
+          </table>
+      </div>
         </div>
         <div class="modal-footer" >
         
         </div>
     </div>
-  </div>`;
+  </div>`);
+
+
+
 
   /* Evento insere modal no HTML */
   $(document.body).prepend(form_alunos);
@@ -198,6 +212,22 @@ function _AlunosPresentes(project){
     $(".modal-backdrop ").remove();
   });
 
+
+  project.alunos.forEach(aluno => {
+    console.log(aluno)
+    let td =  $.parseHTML(`<tr data-alunos-item="${aluno.email}> 
+            <th scope="row">${aluno.email}</th>
+                <td>${aluno.email}</td>
+                <td id="td-alunos-${aluno.email}"><button type="button" class="btn btn-danger">Remover</button></td>
+            </tr>
+          `);
+
+    $('[td_body_aluno]').append(td);
+
+    $('#td-alunos-'+aluno.email).click(function(e){
+
+    });
+  });
 
 }
 
