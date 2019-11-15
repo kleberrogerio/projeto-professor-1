@@ -42,7 +42,7 @@ if(session_login == null){
                 <td>${ project.titulo }</td>
                 <td>${ project['descricao-breve'] }</td>
                 <td>Nome da Empresa</td>
-                <td id="td-key">${project['key-projeto-aluno'] != null ? project['key-projeto-aluno'] : '<input type="text" class="form-control" id="keyAlId" name="key_al" placeholder="Inserir Chave">'}<td>
+                <td id="td-key">${project['chave'] != null ? project['chave'] : '<input type="text" class="form-control" id="keyAlId-'+project_id+'" name="key_al" placeholder="Inserir Chave">'}<td>
                 <td id="td-alkey-${project_id}"></td>
                 <td id="td-alunos-${project_id}"></td>
             </tr>
@@ -61,14 +61,14 @@ if(session_login == null){
           </button>
           </li>`);
 
-          if(project['key-projeto-aluno'] == null){
+          if(project['chave'] == null){
             let $generateKey = $(generateKey);
             $generateKey.click(function(e){
               e.preventDefault();
-              var myKey = $("#keyAlId").val();
+              var myKey = $('#keyAlId-'+project_id).val();
             
               if (confirm('Deseja realmente alterar o chave dos alunos ?')) {
-                $.post("/atribuirChave", JSON.stringify({'_id':project._id, 'key-projeto-aluno': myKey}), "json");
+                $.post("/updateProjetoProfessor", JSON.stringify({'_id':project._id, 'chave': myKey}), "json");
                 location.reload();
               }
             });
@@ -82,7 +82,7 @@ if(session_login == null){
               e.preventDefault();
               var myKey = null;
               if (confirm('Deseja realmente alterar o chave dos alunos ?')) {
-                $.post("/atribuirChave", JSON.stringify({'_id':project._id, 'key-projeto-aluno': myKey}), "json");
+                $.post("/updateProjetoProfessor", JSON.stringify({'_id':project._id, 'chave': myKey}), "json");
                 location.reload();
               }
             });
@@ -199,10 +199,6 @@ function _AlunosPresentes(project){
         </div>
     </div>
   </div>`);
-
-
-
-
   /* Evento insere modal no HTML */
   $(document.body).prepend(form_alunos);
   /* Evento Remove modal do HTML */
@@ -214,21 +210,25 @@ function _AlunosPresentes(project){
 
 
   project.alunos.forEach(aluno => {
-    console.log(aluno)
+    let remover = project.alunos.indexOf(aluno)
     let td =  $.parseHTML(`<tr data-alunos-item="${aluno.email}> 
             <th scope="row">${aluno.email}</th>
                 <td>${aluno.email}</td>
-                <td id="td-alunos-${aluno.email}"><button type="button" class="btn btn-danger">Remover</button></td>
+                <td btn-remove-al-${remover}></td>
             </tr>
           `);
 
-    $('[td_body_aluno]').append(td);
-
-    $('#td-alunos-'+aluno.email).click(function(e){
-
+    let btn_remove = $.parseHTML(`<button type="button" class="btn btn-danger">Remover</button>`);
+    let $btn_remove = $(btn_remove);
+    $btn_remove.click(function(e){
+       project.alunos.splice(remover, 1);
+        $.post("/updateProjetoProfessor", JSON.stringify({'_id':project._id, 'alunos': project.alunos}), "json");
+        location.reload();
     });
-  });
 
+    $('[td_body_aluno]').append(td);
+    $('[btn-remove-al-'+remover+']').append(btn_remove);
+  });
 }
 
 

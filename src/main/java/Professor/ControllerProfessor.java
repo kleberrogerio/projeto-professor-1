@@ -130,11 +130,12 @@ public class ControllerProfessor {
 			}
 		});
 	}
-	public void atribuirChave() {
-		post("/atribuirChave", (Request request, Response response) -> {
+	public void updateProjetoProfessor() {
+		post("/updateProjetoProfessor", (Request request, Response response) -> {
 			response.header("Access-Control-Allow-Origin", "*");
-			model.updateProjeto(Document.parse(request.body() ));
-			return null;
+			model.updateProjeto(Document.parse(request.body()));
+			System.out.println(request.body());
+			return request.body();
 		});
 	}
 	public void inserirProfessor() {
