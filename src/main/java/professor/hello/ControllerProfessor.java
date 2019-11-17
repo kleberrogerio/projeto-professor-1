@@ -1,4 +1,4 @@
-package Professor;
+package professor.hello;
 
 import static spark.Spark.get;
 import static spark.Spark.post;
@@ -13,8 +13,6 @@ import org.json.JSONObject;
 
 import com.mongodb.client.FindIterable;
 
-import hello.Jwt;
-import hello.EmailService;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -118,7 +116,7 @@ public class ControllerProfessor {
 				String senha = json.getString("senha");
 				try {
 					Document professor = model.login(email, senha);
-					System.out.println(professor);
+					
 					if ((Boolean)professor.get("ativo")==true){
 						return professor.toJson();
 					}
@@ -134,7 +132,7 @@ public class ControllerProfessor {
 		post("/updateProjetoProfessor", (Request request, Response response) -> {
 			response.header("Access-Control-Allow-Origin", "*");
 			model.updateProjeto(Document.parse(request.body()));
-			System.out.println(request.body());
+			
 			return request.body();
 		});
 	}
@@ -169,18 +167,13 @@ public class ControllerProfessor {
 
 	public void atualizaProfessor() {
 		post("/updateProfessor", (Request request, Response response) -> {
-			System.out.println("Chamou Aqui");
 			response.header("Access-Control-Allow-Origin", "*");
 			JSONObject json = new JSONObject(request.body());
-			System.out.println(json);
 			model.updateProfessor(Document.parse(request.body()));
 			return json;
 		});
 	}
 	public void searchprofessor() {
-		get("/search", (request, response) -> {
-			return model.search(request.queryParams("chave"), request.queryParams("valor"));
-		});
 		post("/professorLogado", (request, response) -> {
 			JSONObject json = new JSONObject(request.body());
 			String email = json.getString("email");
@@ -193,23 +186,12 @@ public class ControllerProfessor {
 			public Object handle(final Request request, final Response response) {
 				String email = request.queryString();
 				FindIterable<Document> projectFound = model.myProjects(new Document("email", email));
-				System.out.println(email);
 				return StreamSupport.stream(projectFound.spliterator(), false)
 						.map(Document::toJson)
 						.collect(Collectors.joining(", ", "[", "]"));
 			}
 		});
 		
-		get("/projetos", new Route() {
-			@Override
-			public Object handle(final Request request, final Response response) {
-
-				FindIterable<Document> projectsFound = model.listaProjetos();
-
-				return StreamSupport.stream(projectsFound.spliterator(), false).map(Document::toJson)
-						.collect(Collectors.joining(", ", "[", "]"));
-			}
-		});
 	}
 	
 }
