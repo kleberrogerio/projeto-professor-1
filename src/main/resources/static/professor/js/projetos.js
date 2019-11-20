@@ -147,7 +147,7 @@ function userData(user){
 
       /* Pupula Usuário Data */
       let data = $.parseHTML(`
-      <li>${user.name}</li>
+      <li>${user.nome}</li>
       <li>Professor</li>`);
       /* </> Pupula Usuário Data */
     

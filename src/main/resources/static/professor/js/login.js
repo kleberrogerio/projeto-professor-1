@@ -18,8 +18,6 @@ $('#form_register').submit(function(e){
            nome: $("#nome-cadastro").val(),
            email: $("#email-cadastro").val(),
            senha: $("#senha-cadastro").val(),
-           //Nivel em teste!!!
-           nivel: 1
        }
     jsonString = JSON.stringify(json);
     $.post("/professorcadastro",jsonString,'json');
@@ -34,8 +32,8 @@ $('#form_login').submit(function(e){
     var password = $('#senha-login').val().trim();
     
     $.post("/professor", JSON.stringify({'email': userName, 'senha': password}), function(data){
-            
-        if(data.name){
+            console.log(data)
+        if(data.ativo == true){
             window.location.href = 'principal.html';
             sessionStorage.setItem("sess_email_professor",data.email);
         } else {

@@ -26,8 +26,8 @@ public class MainServer {
 		//Servir conteudo html, css e javascript
 		staticFileLocation("/static");
 
-		inicializarPesquisa();
-		inicializarUsers();
+		//inicializarPesquisa();
+		//inicializarUsers();
    
 		ControllerProfessor controller = new ControllerProfessor(model);
  
@@ -37,6 +37,7 @@ public class MainServer {
 	    controller.updateProjetoProfessor();
 	    controller.searchprofessor();
 	    controller.atualizaProfessor();
+	    controller.inserirProfessor();
 	 
     }
     
