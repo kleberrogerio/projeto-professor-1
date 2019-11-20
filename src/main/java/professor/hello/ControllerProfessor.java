@@ -143,7 +143,6 @@ public class ControllerProfessor {
 			public Object handle(final Request request, final Response response) {
 				try {
 					response.header("Access-Control-Allow-Origin", "*");
-					System.out.println(request.body());
 					String jsonString = request.body();
 					Document userData = Document.parse(jsonString);
 

@@ -45,7 +45,6 @@ public class ModelProfessor {
 	public Document ativarProfessor(String email) {
 		Document prof = searchByEmail(email);
 		prof.replace("ativo", true);
-		System.out.println(prof);
 		return updateProfessor(prof);
 	}
 
